@@ -8,8 +8,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.mad.capstone.screen.TitleScreen;
 
 public class MyGdxGame extends Game {
-	public static final int V_WIDTH = 400;
-	public static final int V_HEIGHT = 208;
+	public static final int V_WIDTH = 480;
+	public static final int V_HEIGHT = 320;
 
 	public SpriteBatch batch;
 	
