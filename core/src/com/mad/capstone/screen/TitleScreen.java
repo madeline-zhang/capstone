@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mad.capstone.MyGdxGame;
 import com.mad.capstone.scene.Hud;
+import com.mad.capstone.sprite.Thane;
 
 public class TitleScreen implements Screen {
 
@@ -45,7 +46,7 @@ public class TitleScreen implements Screen {
   // Box2d
   private World world;
   private Box2DDebugRenderer b2dRenderer;
-  private Body player;
+private Thane player;
 
   public TitleScreen(MyGdxGame game) {
     this.game = game;
@@ -60,8 +61,10 @@ public class TitleScreen implements Screen {
     float halfWorldHeight = gamePort.getWorldHeight() / 2;
     gameCam.position.set(halfWorldWidth, halfWorldHeight, 0);
 
-    world = new World(new Vector2(0, -9.8f), true);
+    world = new World(new Vector2(0, -9.8f), false);
     b2dRenderer = new Box2DDebugRenderer();
+    player = new Thane(world);
+
     // temp location
     BodyDef bDef = new BodyDef();
     PolygonShape shape = new PolygonShape();
@@ -97,8 +100,14 @@ public class TitleScreen implements Screen {
   }
 
   private void handleInput(float dt) {
-    if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-      player.applyLinearImpulse(new Vector2(0, 4f), player.getWorldCenter(), true);
+    if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0) {
+      player.b2Body.applyLinearImpulse(new Vector2(0, 3f), player.b2Body.getWorldCenter(), true);
+    }
+    if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2) {
+      player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
+    }
+    if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2) {
+      player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
     }
   }
 
@@ -106,6 +115,9 @@ public class TitleScreen implements Screen {
     handleInput(dt);
     world.step(1 / 60f, 6, 2);
 
+    player.update(dt);
+    gameCam.position.x = player.b2Body.getPosition().x;
+    gameCam.position.y = player.b2Body.getPosition().y;
     gameCam.update();
     renderer.setView(gameCam);
   }

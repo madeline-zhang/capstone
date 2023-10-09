@@ -13,18 +13,23 @@ public class Thane extends Sprite {
   public Body b2Body;
 
   public Thane(World world) {
-    defineMario();
+    this.world = world;
+    defineThane();
   }
 
-  public void defineMario() {
+  public void update(float dt) {
+    setPosition(b2Body.getPosition().x - getWidth()/2, b2Body.getPosition().y - getHeight()/2);
+  }
+
+  public void defineThane() {
     BodyDef bDef = new BodyDef();
-    bDef.position.set(50/MyGdxGame.PPM, 50/MyGdxGame.PPM);
+    bDef.position.set(100/MyGdxGame.PPM, 100/MyGdxGame.PPM);
     bDef.type = BodyDef.BodyType.DynamicBody;
     b2Body = world.createBody (bDef);
 
     FixtureDef fDef = new FixtureDef();
     CircleShape shape = new CircleShape();
-    shape.setRadius(50/ MyGdxGame.PPM);
+    shape.setRadius(20/ MyGdxGame.PPM);
 
     fDef.shape = shape;
     b2Body.createFixture(fDef);
