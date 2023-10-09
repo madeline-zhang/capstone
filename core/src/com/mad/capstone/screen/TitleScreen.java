@@ -1,6 +1,7 @@
 package com.mad.capstone.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -30,7 +31,6 @@ import com.mad.capstone.MyGdxGame;
 import com.mad.capstone.scene.Hud;
 
 public class TitleScreen implements Screen {
-  private static final int TILE_LENGTH = 20;
 
   private MyGdxGame game;
   private OrthographicCamera gameCam;
@@ -45,6 +45,7 @@ public class TitleScreen implements Screen {
   // Box2d
   private World world;
   private Box2DDebugRenderer b2dRenderer;
+  private Body player;
 
   public TitleScreen(MyGdxGame game) {
     this.game = game;
@@ -54,7 +55,7 @@ public class TitleScreen implements Screen {
 
     mapLoader = new TmxMapLoader();
     map = mapLoader.load("realtest/realtest.tmx");
-    renderer = new OrthogonalTiledMapRenderer(map);
+    renderer = new OrthogonalTiledMapRenderer(map, 1 / MyGdxGame.PPM);
     float halfWorldWidth = gamePort.getWorldWidth() / 2;
     float halfWorldHeight = gamePort.getWorldHeight() / 2;
     gameCam.position.set(halfWorldWidth, halfWorldHeight, 0);
@@ -96,13 +97,15 @@ public class TitleScreen implements Screen {
   }
 
   private void handleInput(float dt) {
-    if (Gdx.input.isTouched()) {
-      gameCam.position.x += 100 * dt;
+    if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+      player.applyLinearImpulse(new Vector2(0, 4f), player.getWorldCenter(), true);
     }
   }
 
   public void update(float dt) {
     handleInput(dt);
+    world.step(1 / 60f, 6, 2);
+
     gameCam.update();
     renderer.setView(gameCam);
   }
@@ -149,10 +152,10 @@ public class TitleScreen implements Screen {
 
   private static ChainShape createPolyline(PolylineMapObject polyline) {
     float[] vertices = polyline.getPolyline().getTransformedVertices();
-    Vector2[] worldVertices = new Vector2[vertices.length/2];
+    Vector2[] worldVertices = new Vector2[vertices.length / 2];
 
-    for(int i = 0; i<worldVertices.length; i++) {
-      worldVertices[i] = new Vector2(vertices[i*2], vertices[i*2+1]);
+    for (int i = 0; i < worldVertices.length; i++) {
+      worldVertices[i] = new Vector2(vertices[i * 2] / MyGdxGame.PPM, vertices[i * 2 + 1] / MyGdxGame.PPM);
     }
 
     ChainShape cs = new ChainShape();
