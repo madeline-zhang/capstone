@@ -46,7 +46,7 @@ public class TitleScreen implements Screen {
   // Box2d
   private World world;
   private Box2DDebugRenderer b2dRenderer;
-private Thane player;
+  private Thane player;
 
   public TitleScreen(MyGdxGame game) {
     this.game = game;
@@ -100,15 +100,19 @@ private Thane player;
   }
 
   private void handleInput(float dt) {
+    int horizontalForce = 0;
+    int verticalForce = 0;
     if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0) {
       player.b2Body.applyLinearImpulse(new Vector2(0, 3f), player.b2Body.getWorldCenter(), true);
     }
-    if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2) {
-      player.b2Body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2Body.getWorldCenter(), true);
+    if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+      horizontalForce += 1;
     }
-    if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2) {
-      player.b2Body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2Body.getWorldCenter(), true);
+    if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+      horizontalForce -= 1;
     }
+
+    player.b2Body.setLinearVelocity(horizontalForce * 5, player.b2Body.getLinearVelocity().y);
   }
 
   public void update(float dt) {
