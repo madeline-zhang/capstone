@@ -102,8 +102,8 @@ public class TitleScreen implements Screen {
   private void handleInput(float dt) {
     int horizontalForce = 0;
     int verticalForce = 0;
-    if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.b2Body.getLinearVelocity().y == 0) {
-      player.b2Body.applyLinearImpulse(new Vector2(0, 3f), player.b2Body.getWorldCenter(), true);
+    if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Math.abs(player.b2Body.getLinearVelocity().y) < 0.5) {
+      player.b2Body.applyForceToCenter(0, 200, false);
     }
     if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
       horizontalForce += 1;
@@ -112,7 +112,7 @@ public class TitleScreen implements Screen {
       horizontalForce -= 1;
     }
 
-    player.b2Body.setLinearVelocity(horizontalForce * 5, player.b2Body.getLinearVelocity().y);
+    player.b2Body.setLinearVelocity(horizontalForce * 3, player.b2Body.getLinearVelocity().y);
   }
 
   public void update(float dt) {
