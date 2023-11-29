@@ -5,17 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -27,13 +22,15 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mad.capstone.MyGdxGame;
+import com.mad.capstone.SkiesTurnPurple;
 import com.mad.capstone.scene.Hud;
 import com.mad.capstone.sprite.Thane;
 
-public class TitleScreen implements Screen {
+public class MainScreen implements Screen {
 
-  private MyGdxGame game;
+  private SkiesTurnPurple game;
+  private TextureAtlas atlas;
+
   private OrthographicCamera gameCam;
   private Viewport gamePort;
   private Hud hud;
@@ -48,22 +45,23 @@ public class TitleScreen implements Screen {
   private Box2DDebugRenderer b2dRenderer;
   private Thane player;
 
-  public TitleScreen(MyGdxGame game) {
+  public MainScreen(SkiesTurnPurple game) {
+    this.atlas = new TextureAtlas("thane.atlas"); // use asset manager later
     this.game = game;
     gameCam = new OrthographicCamera();
-    gamePort = new FitViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT, gameCam);
+    gamePort = new FitViewport(SkiesTurnPurple.V_WIDTH, SkiesTurnPurple.V_HEIGHT, gameCam);
     hud = new Hud(game.batch);
 
     mapLoader = new TmxMapLoader();
     map = mapLoader.load("map/map.tmx");
-    renderer = new OrthogonalTiledMapRenderer(map, 1 / MyGdxGame.PPM);
+    renderer = new OrthogonalTiledMapRenderer(map, 1 / SkiesTurnPurple.PPM);
     float halfWorldWidth = gamePort.getWorldWidth() / 2;
     float halfWorldHeight = gamePort.getWorldHeight() / 2;
     gameCam.position.set(halfWorldWidth, halfWorldHeight, 0);
 
     world = new World(new Vector2(0, -9.8f), false);
     b2dRenderer = new Box2DDebugRenderer();
-    player = new Thane(world);
+    player = new Thane(world, this);
 
     // temp location
     BodyDef bDef = new BodyDef();
@@ -86,6 +84,10 @@ public class TitleScreen implements Screen {
     shape.dispose();
   }
 
+  public TextureAtlas getAtlas() {
+    return atlas;
+  }
+
   @Override
   public void show() {
 
@@ -93,11 +95,9 @@ public class TitleScreen implements Screen {
 
   private void handleInput(float dt) {
     int horizontalForce = 0;
-    int verticalForce = 0;
     if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.isOnGround) {
       player.setOnGroundFalse();
       player.b2Body.applyForceToCenter(0, 200, false);
-//      player.
     }
     if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 //      player.b2Body.setLinearVelocity(1, player.b2Body.getAngularVelocity());
@@ -136,12 +136,13 @@ public class TitleScreen implements Screen {
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     renderer.render();
     b2dRenderer.render(world, gameCam.combined);
+//    game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+    game.batch.begin();
+    player.draw(game.batch);
+    game.batch.end();
 
     game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
     hud.stage.draw();
-//    game.batch.begin();
-//    game.batch.draw(texture, 0, 0);
-//    game.batch.end();
   }
 
   @Override
@@ -166,7 +167,7 @@ public class TitleScreen implements Screen {
 
   @Override
   public void dispose() {
-
+player.dispose();
   }
 
   private static ChainShape createPolyline(PolylineMapObject polyline) {
@@ -174,7 +175,7 @@ public class TitleScreen implements Screen {
     Vector2[] worldVertices = new Vector2[vertices.length / 2];
 
     for (int i = 0; i < worldVertices.length; i++) {
-      worldVertices[i] = new Vector2(vertices[i * 2] / MyGdxGame.PPM, vertices[i * 2 + 1] / MyGdxGame.PPM);
+      worldVertices[i] = new Vector2(vertices[i * 2] / SkiesTurnPurple.PPM, vertices[i * 2 + 1] / SkiesTurnPurple.PPM);
     }
 
     ChainShape cs = new ChainShape();

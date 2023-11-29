@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mad.capstone.MyGdxGame;
+import com.mad.capstone.SkiesTurnPurple;
 
 public class Hud {
   public Stage stage;
@@ -31,7 +31,7 @@ public class Hud {
     timeCount = 0;
     score = 0;
 
-    viewport = new FitViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT, new OrthographicCamera());
+    viewport = new FitViewport(SkiesTurnPurple.V_WIDTH, SkiesTurnPurple.V_HEIGHT, new OrthographicCamera());
     stage = new Stage(viewport, sb);
 
     Table table = new Table();

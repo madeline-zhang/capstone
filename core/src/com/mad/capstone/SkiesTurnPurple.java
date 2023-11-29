@@ -1,13 +1,10 @@
 package com.mad.capstone;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.mad.capstone.screen.TitleScreen;
+import com.mad.capstone.screen.MainScreen;
 
-public class MyGdxGame extends Game {
+public class SkiesTurnPurple extends Game {
 	public static final float PPM = 100;
 	public static final float V_WIDTH = 480/PPM;
 	public static final float V_HEIGHT = 320/PPM;
@@ -17,7 +14,7 @@ public class MyGdxGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		setScreen(new TitleScreen(this));
+		setScreen(new MainScreen(this));
 	}
 
 	@Override
