@@ -55,7 +55,7 @@ public class TitleScreen implements Screen {
     hud = new Hud(game.batch);
 
     mapLoader = new TmxMapLoader();
-    map = mapLoader.load("realtest/realtest.tmx");
+    map = mapLoader.load("map/map.tmx");
     renderer = new OrthogonalTiledMapRenderer(map, 1 / MyGdxGame.PPM);
     float halfWorldWidth = gamePort.getWorldWidth() / 2;
     float halfWorldHeight = gamePort.getWorldHeight() / 2;
@@ -73,15 +73,6 @@ public class TitleScreen implements Screen {
 
     for (MapObject object : map.getLayers().get("object").getObjects()) {
       Shape tempShape;
-      //        Rectangle rect = ((RectangleMapObject) object).getRectangle();
-//        bDef.type = BodyDef.BodyType.StaticBody;
-//        float xPos = rect.getX() + rect.getWidth() / 2;
-//        float yPos = rect.getY() + rect.getWidth() / 2;
-//        bDef.position.set(xPos, yPos);
-//        body = world.createBody(bDef);
-//        fDef.shape = shape;
-//        body.createFixture(fDef);
-//        shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
       if (object instanceof PolylineMapObject) {
         tempShape = createPolyline((PolylineMapObject) object);
       } else {
@@ -90,8 +81,9 @@ public class TitleScreen implements Screen {
       bDef.type = BodyDef.BodyType.StaticBody;
       body = world.createBody(bDef);
       body.createFixture(tempShape, 1.0f);
-      shape.dispose();
+//      shape.dispose();
     }
+    shape.dispose();
   }
 
   @Override
@@ -102,17 +94,28 @@ public class TitleScreen implements Screen {
   private void handleInput(float dt) {
     int horizontalForce = 0;
     int verticalForce = 0;
-    if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Math.abs(player.b2Body.getLinearVelocity().y) < 0.15) {
-      player.b2Body.applyForceToCenter(0, 150, false);
+    if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.isOnGround) {
+      player.setOnGroundFalse();
+      player.b2Body.applyForceToCenter(0, 200, false);
+//      player.
     }
     if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+//      player.b2Body.setLinearVelocity(1, player.b2Body.getAngularVelocity());
+//      player.b2Body.applyLinearImpulse(new Vector2(0.05f, 0), player.b2Body.getLocalCenter(), false);
       horizontalForce += 1;
     }
     if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+//      player.b2Body.setLinearVelocity(-1, player.b2Body.getAngularVelocity());
+//      player.b2Body.applyLinearImpulse(new Vector2(-0.05f, 0), player.b2Body.getLocalCenter(), false);
       horizontalForce -= 1;
     }
 
+    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+      horizontalForce = horizontalForce * 2;
+    }
+
     player.b2Body.setLinearVelocity(horizontalForce, player.b2Body.getLinearVelocity().y);
+
   }
 
   public void update(float dt) {
