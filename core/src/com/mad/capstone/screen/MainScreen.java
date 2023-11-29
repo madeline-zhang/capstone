@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mad.capstone.SkiesTurnPurple;
 import com.mad.capstone.scene.Hud;
 import com.mad.capstone.sprite.Thane;
+import com.mad.capstone.util.WorldCreator;
 
 public class MainScreen implements Screen {
 
@@ -61,27 +62,13 @@ public class MainScreen implements Screen {
 
     world = new World(new Vector2(0, -9.8f), false);
     b2dRenderer = new Box2DDebugRenderer();
+
+    new WorldCreator(world, map);
+
     player = new Thane(world, this);
 
     // temp location
-    BodyDef bDef = new BodyDef();
-    PolygonShape shape = new PolygonShape();
-    FixtureDef fDef = new FixtureDef();
-    Body body;
 
-    for (MapObject object : map.getLayers().get("object").getObjects()) {
-      Shape tempShape;
-      if (object instanceof PolylineMapObject) {
-        tempShape = createPolyline((PolylineMapObject) object);
-      } else {
-        continue;
-      }
-      bDef.type = BodyDef.BodyType.StaticBody;
-      body = world.createBody(bDef);
-      body.createFixture(tempShape, 1.0f);
-//      shape.dispose();
-    }
-    shape.dispose();
   }
 
   public TextureAtlas getAtlas() {
@@ -167,19 +154,13 @@ public class MainScreen implements Screen {
 
   @Override
   public void dispose() {
+    map.dispose();
+    renderer.dispose();
+    world.dispose();
+    hud.dispose();
+    b2dRenderer.dispose();
 player.dispose();
   }
 
-  private static ChainShape createPolyline(PolylineMapObject polyline) {
-    float[] vertices = polyline.getPolyline().getTransformedVertices();
-    Vector2[] worldVertices = new Vector2[vertices.length / 2];
 
-    for (int i = 0; i < worldVertices.length; i++) {
-      worldVertices[i] = new Vector2(vertices[i * 2] / SkiesTurnPurple.PPM, vertices[i * 2 + 1] / SkiesTurnPurple.PPM);
-    }
-
-    ChainShape cs = new ChainShape();
-    cs.createChain(worldVertices);
-    return cs;
-  }
 }
