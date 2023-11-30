@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mad.capstone.SkiesTurnPurple;
 import com.mad.capstone.scene.Hud;
 import com.mad.capstone.sprite.Thane;
+import com.mad.capstone.util.MyContactListener;
 import com.mad.capstone.util.WorldCreator;
 
 public class MainScreen implements Screen {
@@ -67,7 +68,7 @@ public class MainScreen implements Screen {
 
     player = new Thane(world, this);
 
-    // temp location
+    world.setContactListener(new MyContactListener(player));
 
   }
 
@@ -81,24 +82,20 @@ public class MainScreen implements Screen {
   }
 
   private void handleInput(float dt) {
-    int horizontalForce = 0;
+    float horizontalForce = 0;
     if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && player.isOnGround) {
-      player.setOnGroundFalse();
+      player.setOnGround(false);
       player.b2Body.applyForceToCenter(0, 200, false);
     }
     if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//      player.b2Body.setLinearVelocity(1, player.b2Body.getAngularVelocity());
-//      player.b2Body.applyLinearImpulse(new Vector2(0.05f, 0), player.b2Body.getLocalCenter(), false);
-      horizontalForce += 1;
+      horizontalForce += 0.7f;
     }
     if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//      player.b2Body.setLinearVelocity(-1, player.b2Body.getAngularVelocity());
-//      player.b2Body.applyLinearImpulse(new Vector2(-0.05f, 0), player.b2Body.getLocalCenter(), false);
-      horizontalForce -= 1;
+      horizontalForce -= 0.7f;
     }
 
     if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-      horizontalForce = horizontalForce * 2;
+      horizontalForce = horizontalForce * 3;
     }
 
     player.b2Body.setLinearVelocity(horizontalForce, player.b2Body.getLinearVelocity().y);
@@ -111,7 +108,11 @@ public class MainScreen implements Screen {
 
     player.update(dt);
     gameCam.position.x = player.b2Body.getPosition().x;
-    gameCam.position.y = player.b2Body.getPosition().y;
+    float temp = player.b2Body.getLinearVelocity().y;
+    if(player.isOnGround) {
+//      gameCam.position.y = player.b2Body.getPosition().y;
+      gameCam.translate(new Vector2(0, player.b2Body.getPosition().y - temp));
+    }
     gameCam.update();
     renderer.setView(gameCam);
   }
@@ -159,7 +160,7 @@ public class MainScreen implements Screen {
     world.dispose();
     hud.dispose();
     b2dRenderer.dispose();
-player.dispose();
+    player.dispose();
   }
 
 

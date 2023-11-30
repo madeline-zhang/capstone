@@ -29,8 +29,7 @@ public class WorldCreator {
       }
       bDef.type = BodyDef.BodyType.StaticBody;
       body = world.createBody(bDef);
-      body.createFixture(tempShape, 1.0f);
-//      shape.dispose();
+      body.createFixture(tempShape, 1.0f).setUserData("ground");
     }
     shape.dispose();
   }

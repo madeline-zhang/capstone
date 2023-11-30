@@ -2,9 +2,11 @@ package com.mad.capstone.sprite;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mad.capstone.SkiesTurnPurple;
@@ -27,7 +29,7 @@ public class Thane extends Sprite {
     this.world = world;
 
     this.isOnGround = true;
-    setOrigin(getWidth()/2f, getHeight()/2f);
+//    setOrigin(getWidth()/2f, getHeight()/2f);
     defineThane();
   }
 
@@ -36,11 +38,11 @@ public class Thane extends Sprite {
     setPosition(b2Body.getPosition().x - getWidth() / 2, b2Body.getPosition().y - getHeight() / 2);
     if (updateTicker >= 80) {
       updateTicker = 0;
-      System.out.println("Thane's position: " + b2Body.getPosition().x + ", " + b2Body.getPosition().y);
+//      System.out.println("Thane's position: " + b2Body.getPosition().x + ", " + b2Body.getPosition().y);
     }
-    if(b2Body.getLinearVelocity().y == 0) {
-      isOnGround = true;
-    }
+//    if (b2Body.getLinearVelocity().y == 0) {
+//      isOnGround = true;
+//    }
   }
 
   public void defineThane() {
@@ -52,23 +54,20 @@ public class Thane extends Sprite {
     FixtureDef fDef = new FixtureDef();
     CircleShape shape = new CircleShape();
     shape.setRadius(20 / SkiesTurnPurple.PPM);
-
     fDef.shape = shape;
-    b2Body.createFixture(fDef);
+    b2Body.createFixture(fDef).setUserData("thane");
+
+//    EdgeShape feet = new EdgeShape();
+//    feet.set(new Vector2(-10 / SkiesTurnPurple.PPM, -20 / SkiesTurnPurple.PPM), new Vector2(10 / SkiesTurnPurple.PPM, -20 / SkiesTurnPurple.PPM));
+//    fDef.shape = feet;
+//    fDef.isSensor = true;
+//    b2Body.createFixture(fDef).setUserData("feet");
   }
 
-  public void setOnGroundFalse() {
-    isOnGround = false;
+  public void setOnGround(boolean bool) {
+    isOnGround = bool;
   }
 
-//  public void checkOnGround() {
-//    Vector2 raycastBegin = new Vector2(b2Body.getPosition());
-//    float innerPlayerWidth = 20 * 0.6f;
-//    raycastBegin.sub(innerPlayerWidth/2.0f, 0.0f);
-//    Vector2 raycastEnd = new Vector2(raycastBegin).add(0.0f, -0.16f);
-//
-//    RaycastInfo
-//  }
   public void dispose() {
     getTexture().dispose();
   }
