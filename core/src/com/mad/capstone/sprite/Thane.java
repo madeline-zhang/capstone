@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mad.capstone.SkiesTurnPurple;
 import com.mad.capstone.screen.MainScreen;
@@ -22,26 +23,21 @@ public class Thane extends Sprite {
 
   public Thane(World world, MainScreen screen) {
     super(screen.getAtlas().findRegion("thane"));
+    this.world = world;
+    defineThane();
     thaneStand = new TextureRegion(getTexture(), 0, 0, 20, 40);
     setBounds(0, 0, 20 / SkiesTurnPurple.PPM, 40 / SkiesTurnPurple.PPM);
     setRegion(thaneStand);
-
-    this.world = world;
-
     this.isOnGround = true;
-//    setOrigin(getWidth()/2f, getHeight()/2f);
-    defineThane();
+
   }
 
   public void update(float dt) {
     updateTicker++;
-    setPosition(b2Body.getPosition().x - getWidth() / 2, b2Body.getPosition().y - getHeight() / 2);
-    if (updateTicker >= 80) {
-      updateTicker = 0;
+    setPosition(b2Body.getPosition().x -getWidth()/2, b2Body.getPosition().y - getHeight()/2);
+//    if (updateTicker >= 80) {
+//      updateTicker = 0;
 //      System.out.println("Thane's position: " + b2Body.getPosition().x + ", " + b2Body.getPosition().y);
-    }
-//    if (b2Body.getLinearVelocity().y == 0) {
-//      isOnGround = true;
 //    }
   }
 
@@ -52,16 +48,12 @@ public class Thane extends Sprite {
     b2Body = world.createBody(bDef);
 
     FixtureDef fDef = new FixtureDef();
-    CircleShape shape = new CircleShape();
-    shape.setRadius(20 / SkiesTurnPurple.PPM);
-    fDef.shape = shape;
+    PolygonShape polygon = new PolygonShape();
+    polygon.setAsBox(10 / SkiesTurnPurple.PPM, 20 / SkiesTurnPurple.PPM);
+    fDef.shape = polygon;
     b2Body.createFixture(fDef).setUserData("thane");
 
-//    EdgeShape feet = new EdgeShape();
-//    feet.set(new Vector2(-10 / SkiesTurnPurple.PPM, -20 / SkiesTurnPurple.PPM), new Vector2(10 / SkiesTurnPurple.PPM, -20 / SkiesTurnPurple.PPM));
-//    fDef.shape = feet;
-//    fDef.isSensor = true;
-//    b2Body.createFixture(fDef).setUserData("feet");
+    polygon.dispose();
   }
 
   public void setOnGround(boolean bool) {
@@ -70,6 +62,7 @@ public class Thane extends Sprite {
 
   public void dispose() {
     getTexture().dispose();
+
   }
 
 }

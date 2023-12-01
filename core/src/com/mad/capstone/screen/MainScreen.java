@@ -108,10 +108,8 @@ public class MainScreen implements Screen {
 
     player.update(dt);
     gameCam.position.x = player.b2Body.getPosition().x;
-    float temp = player.b2Body.getLinearVelocity().y;
-    if(player.isOnGround) {
-//      gameCam.position.y = player.b2Body.getPosition().y;
-      gameCam.translate(new Vector2(0, player.b2Body.getPosition().y - temp));
+    if (player.isOnGround) {
+      gameCam.position.y = player.b2Body.getPosition().y;
     }
     gameCam.update();
     renderer.setView(gameCam);
@@ -124,7 +122,7 @@ public class MainScreen implements Screen {
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     renderer.render();
     b2dRenderer.render(world, gameCam.combined);
-//    game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+    game.batch.setProjectionMatrix(gameCam.combined);
     game.batch.begin();
     player.draw(game.batch);
     game.batch.end();
@@ -163,5 +161,10 @@ public class MainScreen implements Screen {
     player.dispose();
   }
 
+//  private boolean outsideOf(Vector2 point, Vector2 camCenter) {
+//    int threshold = 100;
+//    return (point.x>camCenter.x+threshold/SkiesTurnPurple.PPM) || (point.y>camCenter.y+threshold/SkiesTurnPurple.PPM)
+//            || (point.x<camCenter.x-threshold/SkiesTurnPurple.PPM) || (point.y<camCenter.y-threshold/SkiesTurnPurple.PPM);
+//  }
 
 }
