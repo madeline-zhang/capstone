@@ -1,0 +1,17 @@
+temp_sprites.png
+size:256,64
+repeat:none
+bird_oni_king
+bounds:60,0,20,40
+ellis
+bounds:20,0,20,40
+ellis_troll
+bounds:100,0,20,40
+elspeth
+bounds:120,0,20,40
+fyren
+bounds:80,0,20,40
+thane
+bounds:40,0,20,40
+winola
+bounds:0,0,20,40

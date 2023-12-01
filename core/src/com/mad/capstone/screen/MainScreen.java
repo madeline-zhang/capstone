@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mad.capstone.SkiesTurnPurple;
 import com.mad.capstone.scene.Hud;
+import com.mad.capstone.sprite.Fyren;
 import com.mad.capstone.sprite.Thane;
 import com.mad.capstone.util.MyContactListener;
 import com.mad.capstone.util.WorldCreator;
@@ -46,9 +47,10 @@ public class MainScreen implements Screen {
   private World world;
   private Box2DDebugRenderer b2dRenderer;
   private Thane player;
+  private Fyren fyren;
 
   public MainScreen(SkiesTurnPurple game) {
-    this.atlas = new TextureAtlas("thane.atlas"); // use asset manager later
+    this.atlas = new TextureAtlas("texture_packer/temp_sprites.atlas"); // use asset manager later
     this.game = game;
     gameCam = new OrthographicCamera();
     gamePort = new FitViewport(SkiesTurnPurple.V_WIDTH, SkiesTurnPurple.V_HEIGHT, gameCam);
@@ -67,7 +69,7 @@ public class MainScreen implements Screen {
     new WorldCreator(world, map);
 
     player = new Thane(world, this);
-
+    fyren = new Fyren(world, this);
     world.setContactListener(new MyContactListener(player));
 
   }
@@ -107,6 +109,7 @@ public class MainScreen implements Screen {
     world.step(1 / 60f, 6, 2);
 
     player.update(dt);
+    fyren.update(dt);
     gameCam.position.x = player.b2Body.getPosition().x;
     if (player.isOnGround) {
       gameCam.position.y = player.b2Body.getPosition().y;
@@ -125,6 +128,7 @@ public class MainScreen implements Screen {
     game.batch.setProjectionMatrix(gameCam.combined);
     game.batch.begin();
     player.draw(game.batch);
+    fyren.draw(game.batch);
     game.batch.end();
 
     game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -160,11 +164,5 @@ public class MainScreen implements Screen {
     b2dRenderer.dispose();
     player.dispose();
   }
-
-//  private boolean outsideOf(Vector2 point, Vector2 camCenter) {
-//    int threshold = 100;
-//    return (point.x>camCenter.x+threshold/SkiesTurnPurple.PPM) || (point.y>camCenter.y+threshold/SkiesTurnPurple.PPM)
-//            || (point.x<camCenter.x-threshold/SkiesTurnPurple.PPM) || (point.y<camCenter.y-threshold/SkiesTurnPurple.PPM);
-//  }
 
 }
